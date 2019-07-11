@@ -1,0 +1,30 @@
+---
+# this role is meant to be applied to ubuntu 14,16,18 hosts
+##
+- name: ensure req'd pkg is installed
+  apt:
+    name: cifs-utils
+    state: present
+
+- name: add credentials file
+  template:
+    src: creds.j2
+    dest: "{{ ans_role_cifs_mnt.creds_path }}"
+    mode: 0400
+    owner: "{{ ans_role_cifs_mnt.creds_owner }}"
+    group: "{{ ans_role_cifs_mnt.creds_grp | default(ans_role_cifs_mnt.creds_owner) }}"
+
+- name: ensure target mount dir(s) exist
+  file:
+    path: "{{ item.dest_path }}"
+    state: "directory"
+  with_items: ["{{ ans_role_cifs_mnt.mount_points | default([]) }}"]
+
+- name: add dir(s) to fstab and mount
+  mount:
+    src: "{{ item.source }}"
+    path: "{{ item.dest_path }}"
+    opts: "credentials={{ans_role_cifs_mnt.creds_path}},iocharset=utf8,sec=ntlm,domain={{ans_role_cifs_mnt.creds_domain}}"
+    fstype: "cifs"
+    state: "mounted"
+  with_items: ["{{ ans_role_cifs_mnt.mount_points | default([]) }}"]

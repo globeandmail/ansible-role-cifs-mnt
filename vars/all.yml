@@ -1,7 +1,6 @@
 ans_role_cifs_mnt:
   creds_path: ""
   creds_owner: ""
-  creds_domain: ""
   creds:
     user: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -9,6 +8,9 @@ ans_role_cifs_mnt:
     pass: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           123
+    domain: ""
   mount_points:
     - source: ""
       dest_path: ""
+      user: ""
+      grp: ""

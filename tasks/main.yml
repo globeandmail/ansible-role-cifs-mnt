@@ -24,7 +24,7 @@
   mount:
     src: "{{ item.source }}"
     path: "{{ item.dest_path }}"
-    opts: "credentials={{ans_role_cifs_mnt.creds_path}},iocharset=utf8,sec=ntlm,domain={{ans_role_cifs_mnt.creds_domain}}"
+    opts: "credentials={{ans_role_cifs_mnt.creds_path}},iocharset=utf8,sec=ntlm,uid={{item.user|default(0)}},gid={{item.grp|default(item.user)|default(0)}}"
     fstype: "cifs"
     state: "mounted"
   with_items: ["{{ ans_role_cifs_mnt.mount_points | default([]) }}"]
